@@ -1,3 +1,0 @@
-# Este é um exemplo...
-
-# Vamos usar como se fossem packages personalizadas para uma pipeline ou do género.
