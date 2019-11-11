@@ -45,7 +45,6 @@ def plot_nn_metrics(history):
 
 def plot_cm(labels, predictions, p=0.5):
     cm = metrics.confusion_matrix(labels, predictions > p)
-    plt.figure(figsize=(5, 5))
     sb.heatmap(cm,
                annot=True,
                cmap="Blues",
@@ -54,10 +53,9 @@ def plot_cm(labels, predictions, p=0.5):
                annot_kws={'va': 'center',
                           'ha': 'center'},
                yticklabels=True)
-    plt.title('Confusion matrix @{:.2f}'.format(p))
+    plt.title('Confusion matrix @ prob >= {:.2f}'.format(p))
     plt.ylabel('Actual label')
     plt.xlabel('Predicted label')
-    plt.tight_layout()
 
     print('Stayers Detected (True Negatives): ', cm[0][0])
     print('Leavers Incorrectly Detected (False Positives): ', cm[0][1])
@@ -66,11 +64,10 @@ def plot_cm(labels, predictions, p=0.5):
     # print('Total Leavers: ', np.sum(cm[1]))
 
 
-def plot_roc(name, labels, predictions, **kwargs):
-    fig = plt.figure(figsize=(12, 10))
+def plot_roc(name, labels, predictions, lcolor, lwidth=2, lstyle='-'):
     fp, tp, _ = metrics.roc_curve(labels, predictions)
 
-    plt.plot(100 * fp, 100 * tp, label=name, linewidth=2, **kwargs)
+    plt.plot(100 * fp, 100 * tp, label=name, color=lcolor, linewidth=lwidth, linestyle=lstyle)
     plt.xlabel('False positives [%]')
     plt.ylabel('True positives [%]')
     plt.grid(True)
@@ -78,8 +75,8 @@ def plot_roc(name, labels, predictions, **kwargs):
     ax.set_aspect('equal')
 
 
-def save_metrics(target_dataframe, model, labels, predictions, p=0.5):
-    target_dataframe.append({'model': model,
+def save_metrics(target_dataframe, model, labels, predictions, p=0.5, batch_size=np.nan):
+    target_dataframe = target_dataframe.append({'model': model,
                             'tp': metrics.confusion_matrix(labels, predictions > p)[1][1],
                             'fp': metrics.confusion_matrix(labels, predictions > p)[0][1],
                             'tn': metrics.confusion_matrix(labels, predictions > p)[0][0],
@@ -88,7 +85,8 @@ def save_metrics(target_dataframe, model, labels, predictions, p=0.5):
                             'prec': metrics.precision_score(labels, predictions > p),
                             'recall': metrics.recall_score(labels, predictions > p),
                             'auc': metrics.roc_auc_score(labels, predictions > p),
-                            'f1': metrics.f1_score(labels, predictions > p)}, ignore_index=True)
+                            'f1': metrics.f1_score(labels, predictions > p),
+                            'batch_s': batch_size}, ignore_index=True)
 
     return target_dataframe
 
