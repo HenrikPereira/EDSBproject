@@ -66,8 +66,9 @@ def plot_cm(labels, predictions, p=0.5):
 
 def plot_roc(name, labels, predictions, lcolor, lwidth=2, lstyle='-'):
     fp, tp, _ = metrics.roc_curve(labels, predictions)
+    auc = metrics.roc_auc_score(labels, predictions > 0.5)
 
-    plt.plot(100 * fp, 100 * tp, label=name, color=lcolor, linewidth=lwidth, linestyle=lstyle)
+    plt.plot(100 * fp, 100 * tp, label='%s (auc=%.2f)' % (name, auc), color=lcolor, linewidth=lwidth, linestyle=lstyle)
     plt.xlabel('False positives [%]')
     plt.ylabel('True positives [%]')
     plt.grid(True)
@@ -76,16 +77,21 @@ def plot_roc(name, labels, predictions, lcolor, lwidth=2, lstyle='-'):
 
 
 def save_metrics(target_dataframe, model, labels, predictions, p=0.5, batch_size=np.nan):
+    tp = metrics.confusion_matrix(labels, predictions > p)[1][1]
+    fp = metrics.confusion_matrix(labels, predictions > p)[0][1]
+    tn = metrics.confusion_matrix(labels, predictions > p)[0][0]
+    fn = metrics.confusion_matrix(labels, predictions > p)[1][0]
     target_dataframe = target_dataframe.append({'model': model,
-                            'tp': metrics.confusion_matrix(labels, predictions > p)[1][1],
-                            'fp': metrics.confusion_matrix(labels, predictions > p)[0][1],
-                            'tn': metrics.confusion_matrix(labels, predictions > p)[0][0],
-                            'fn': metrics.confusion_matrix(labels, predictions > p)[1][0],
+                            'tp': tp,
+                            'fp': fp,
+                            'tn': tn,
+                            'fn': fn,
                             'acc': metrics.accuracy_score(labels, predictions > p),
                             'prec': metrics.precision_score(labels, predictions > p),
                             'recall': metrics.recall_score(labels, predictions > p),
                             'auc': metrics.roc_auc_score(labels, predictions > p),
                             'f1': metrics.f1_score(labels, predictions > p),
+                            'mc_coef': metrics.matthews_corrcoef(labels, predictions > p),
                             'batch_s': batch_size}, ignore_index=True)
 
     return target_dataframe
