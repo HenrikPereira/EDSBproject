@@ -9,19 +9,6 @@ mpl.rcParams['figure.figsize'] = (12, 10)
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
 
-def plot_nn_loss(history, label, n):
-    # Use a log scale to show the wide range of values.
-    plt.semilogy(history.epoch, history.history['loss'],
-                 color=colors[n], label='Train  ' + label)
-    plt.semilogy(history.epoch, history.history['val_loss'],
-                 color=colors[n], label='Val  ' + label,
-                 linestyle="--")
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-
-    plt.legend()
-
-
 def plot_nn_metrics(history):
     p_metrics = ['loss', 'auc', 'precision', 'recall']
     fig = plt.figure(figsize=(12, 10))
@@ -58,15 +45,15 @@ def plot_cm(labels, predictions, p=0.5):
     plt.xlabel('Predicted label')
 
     print('Stayers Detected (True Negatives): ', cm[0][0])
-    print('Leavers Incorrectly Detected (False Positives): ', cm[0][1])
-    print('Stayers Incorrectly Detected (False Negatives): ', cm[1][0])
+    print('Stayers Missed (False Positives): ', cm[0][1])
+    print('Leavers Missed (False Negatives): ', cm[1][0])
     print('Leavers Detected (True Positives): ', cm[1][1])
     # print('Total Leavers: ', np.sum(cm[1]))
 
 
-def plot_roc(name, labels, predictions, lcolor, lwidth=2, lstyle='-'):
-    fp, tp, _ = metrics.roc_curve(labels, predictions)
-    auc = metrics.roc_auc_score(labels, predictions > 0.5)
+def plot_roc(name, labels, y_score, lcolor, lwidth=2, lstyle='-'):
+    fp, tp, _ = metrics.roc_curve(labels, y_score)
+    auc = metrics.roc_auc_score(labels, y_score)
 
     plt.plot(100 * fp, 100 * tp, label='%s (auc=%.2f)' % (name, auc), color=lcolor, linewidth=lwidth, linestyle=lstyle)
     plt.xlabel('False positives [%]')
@@ -89,7 +76,7 @@ def save_metrics(target_dataframe, model, labels, predictions, p=0.5, batch_size
                             'acc': metrics.accuracy_score(labels, predictions > p),
                             'prec': metrics.precision_score(labels, predictions > p),
                             'recall': metrics.recall_score(labels, predictions > p),
-                            'auc': metrics.roc_auc_score(labels, predictions > p),
+                            'auc': metrics.roc_auc_score(labels, predictions),
                             'f1': metrics.f1_score(labels, predictions > p),
                             'mc_coef': metrics.matthews_corrcoef(labels, predictions > p),
                             'batch_s': batch_size}, ignore_index=True)
