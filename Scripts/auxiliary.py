@@ -4,6 +4,8 @@ import matplotlib as mpl
 import seaborn as sb
 import numpy as np
 from sklearn import metrics
+from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import f1_score
 
 mpl.rcParams['figure.figsize'] = (12, 10)
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
@@ -58,6 +60,18 @@ def plot_roc(name, labels, y_score, lcolor, lwidth=2, lstyle='-'):
     plt.plot(100 * fp, 100 * tp, label='%s (auc=%.2f)' % (name, auc), color=lcolor, linewidth=lwidth, linestyle=lstyle)
     plt.xlabel('False positives [%]')
     plt.ylabel('True positives [%]')
+    plt.grid(True)
+    ax = plt.gca()
+    ax.set_aspect('equal')
+
+
+def plot_pr_curve(name, true_labels, y_probability, y_hat, lcolor, lwidth=2, lstyle='-'):
+    precision, recall, _ = precision_recall_curve(true_labels, y_probability)
+    f1, auc_ = f1_score(true_labels, y_hat), metrics.auc(recall, precision)
+
+    plt.plot(recall, precision, label='%s (auc:%.2f|f1:%.2f)' % (name, auc_, f1), color=lcolor, linewidth=lwidth, linestyle=lstyle)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
     plt.grid(True)
     ax = plt.gca()
     ax.set_aspect('equal')
