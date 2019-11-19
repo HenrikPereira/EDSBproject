@@ -69,7 +69,7 @@ def plot_pr_curve(name, true_labels, y_probability, y_hat, lcolor, lwidth=2, lst
     precision, recall, _ = precision_recall_curve(true_labels, y_probability)
     f1, auc_ = f1_score(true_labels, y_hat), metrics.auc(recall, precision)
 
-    plt.plot(recall, precision, label='%s (auc:%.2f|f1:%.2f)' % (name, auc_, f1), color=lcolor, linewidth=lwidth, linestyle=lstyle)
+    plt.plot(recall, precision, label='%s (AUC:%.2f | f1:%.2f)' % (name, auc_, f1), color=lcolor, linewidth=lwidth, linestyle=lstyle)
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.grid(True)
@@ -82,6 +82,7 @@ def save_metrics(target_dataframe, model, labels, predictions, p=0.5, batch_size
     fp = metrics.confusion_matrix(labels, predictions > p)[0][1]
     tn = metrics.confusion_matrix(labels, predictions > p)[0][0]
     fn = metrics.confusion_matrix(labels, predictions > p)[1][0]
+    precision, recall, _ = precision_recall_curve(labels, predictions)
     target_dataframe = target_dataframe.append({'model': model,
                             'tp': tp,
                             'fp': fp,
@@ -90,7 +91,7 @@ def save_metrics(target_dataframe, model, labels, predictions, p=0.5, batch_size
                             'acc': metrics.accuracy_score(labels, predictions > p),
                             'prec': metrics.precision_score(labels, predictions > p),
                             'recall': metrics.recall_score(labels, predictions > p),
-                            'auc': metrics.roc_auc_score(labels, predictions),
+                            'pr_auc': metrics.auc(recall, precision),
                             'f1': metrics.f1_score(labels, predictions > p),
                             'mc_coef': metrics.matthews_corrcoef(labels, predictions > p),
                             'batch_s': batch_size}, ignore_index=True)
