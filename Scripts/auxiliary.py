@@ -12,6 +12,11 @@ colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 
 
 def plot_nn_metrics(history):
+    """
+
+    :param history:
+    :return:
+    """
     p_metrics = ['loss', 'auc', 'precision', 'recall']
     fig = plt.figure(figsize=(12, 10))
     for n, metric in enumerate(p_metrics):
@@ -33,6 +38,13 @@ def plot_nn_metrics(history):
 
 
 def plot_cm(labels, predictions, p=0.5):
+    """
+
+    :param labels:
+    :param predictions:
+    :param p:
+    :return:
+    """
     cm = metrics.confusion_matrix(labels, predictions > p)
     sb.heatmap(cm,
                annot=True,
@@ -54,6 +66,16 @@ def plot_cm(labels, predictions, p=0.5):
 
 
 def plot_roc(name, labels, y_score, lcolor, lwidth=2, lstyle='-'):
+    """
+
+    :param name:
+    :param labels:
+    :param y_score:
+    :param lcolor:
+    :param lwidth:
+    :param lstyle:
+    :return:
+    """
     fp, tp, _ = metrics.roc_curve(labels, y_score)
     auc = metrics.roc_auc_score(labels, y_score)
 
@@ -66,10 +88,22 @@ def plot_roc(name, labels, y_score, lcolor, lwidth=2, lstyle='-'):
 
 
 def plot_pr_curve(name, true_labels, y_probability, y_hat, lcolor, lwidth=2, lstyle='-'):
+    """
+
+    :param name:
+    :param true_labels:
+    :param y_probability:
+    :param y_hat:
+    :param lcolor:
+    :param lwidth:
+    :param lstyle:
+    :return:
+    """
     precision, recall, _ = precision_recall_curve(true_labels, y_probability)
     f1, auc_ = f1_score(true_labels, y_hat), metrics.auc(recall, precision)
 
-    plt.plot(recall, precision, label='%s (AUC:%.2f | f1:%.2f)' % (name, auc_, f1), color=lcolor, linewidth=lwidth, linestyle=lstyle)
+    plt.plot(recall, precision, label='%s (AUC:%.2f | f1:%.2f)' % (name, auc_, f1), color=lcolor, linewidth=lwidth,
+             linestyle=lstyle)
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     plt.grid(True)
@@ -77,29 +111,53 @@ def plot_pr_curve(name, true_labels, y_probability, y_hat, lcolor, lwidth=2, lst
     ax.set_aspect('equal')
 
 
-def save_metrics(target_dataframe, model, labels, predictions, p=0.5, batch_size=np.nan):
+def save_metrics(target_dataframe, model, labels, predictions, split_data, series, p=0.5, batch_size=np.nan):
+    """
+    Function to save metrics to a pandas dataframe.
+    :param target_dataframe: the name of the target dataframe
+    :param model: the name of the model
+    :param labels: the y_true
+    :param predictions: y_hat
+    :param split_data: partition of the data
+    :param series: the series of the pipeline
+    :param p: probability above which the positive label is to be considered
+    :param batch_size: the size of the mini batch used in Keras NN
+    :return: pandas dataframe
+    """
     tp = metrics.confusion_matrix(labels, predictions > p)[1][1]
     fp = metrics.confusion_matrix(labels, predictions > p)[0][1]
     tn = metrics.confusion_matrix(labels, predictions > p)[0][0]
     fn = metrics.confusion_matrix(labels, predictions > p)[1][0]
     precision, recall, _ = precision_recall_curve(labels, predictions)
-    target_dataframe = target_dataframe.append({'model': model,
-                            'tp': tp,
-                            'fp': fp,
-                            'tn': tn,
-                            'fn': fn,
-                            'acc': metrics.accuracy_score(labels, predictions > p),
-                            'prec': metrics.precision_score(labels, predictions > p),
-                            'recall': metrics.recall_score(labels, predictions > p),
-                            'pr_auc': metrics.auc(recall, precision),
-                            'f1': metrics.f1_score(labels, predictions > p),
-                            'mc_coef': metrics.matthews_corrcoef(labels, predictions > p),
-                            'batch_s': batch_size}, ignore_index=True)
+    target_dataframe = target_dataframe.append(
+        {
+            'model': model,
+            'tp': tp,
+            'fp': fp,
+            'tn': tn,
+            'fn': fn,
+            'acc': metrics.accuracy_score(labels, predictions > p),
+            'prec': metrics.precision_score(labels, predictions > p),
+            'recall': metrics.recall_score(labels, predictions > p),
+            'pr_auc': metrics.auc(recall, precision),
+            'f1': metrics.f1_score(labels, predictions > p),
+            'mc_coef': metrics.matthews_corrcoef(labels, predictions > p),
+            'batch_s': batch_size,
+            'data': split_data,
+            'series': series
+        },
+        ignore_index=True
+    )
 
     return target_dataframe
 
 
 def drop_var_nonobj(dataframe):
+    """
+
+    :param dataframe:
+    :return:
+    """
     non_objs = dataframe.describe().columns.tolist()
 
     noneed=0
@@ -121,6 +179,11 @@ def drop_var_nonobj(dataframe):
 
 
 def drop_var_obj(dataframe):
+    """
+
+    :param dataframe:
+    :return:
+    """
     objects = dataframe.describe(include='O').columns.tolist()
 
     noneed=0
