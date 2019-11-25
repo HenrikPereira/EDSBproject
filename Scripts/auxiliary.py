@@ -1,28 +1,21 @@
-import pandas as pd
-import matplotlib.pyplot as plt
 import matplotlib as mpl
-import seaborn as sb
+import matplotlib.pyplot as plt
 import numpy as np
-from clyent import color
-from sklearn import metrics
-from sklearn.metrics import precision_recall_curve, f1_score, matthews_corrcoef, make_scorer
+import pandas as pd
+import seaborn as sb
 from sklearn.cluster import KMeans
-from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
-from sklearn.preprocessing import MinMaxScaler
-from xgboost import XGBClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import LinearSVC
-from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier as RForest
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import precision_recall_curve, f1_score, matthews_corrcoef, confusion_matrix, \
+    roc_auc_score, roc_curve, auc, balanced_accuracy_score, precision_score, recall_score
+from sklearn.model_selection import StratifiedKFold, GridSearchCV
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.svm import LinearSVC, SVC
+from xgboost import XGBClassifier
 
 mpl.rcParams['figure.figsize'] = (12, 10)
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
 ml_metric = 'f1'
-
-
-def matthews_c_coef(ytrue, yhat):
-    mcc = matthews_corrcoef(y_true=ytrue, y_pred=yhat)
-    return mcc
 
 
 def grids_skf_xgb(data_x, data_y, grid_params, pos_weight=1, scv_folds=5):
@@ -37,12 +30,11 @@ def grids_skf_xgb(data_x, data_y, grid_params, pos_weight=1, scv_folds=5):
     """
     m_xgb = XGBClassifier(n_jobs=-1, learning_rate=0.01, scale_pos_weight=pos_weight, verbosity=0)
     minmax = MinMaxScaler()
-    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_xgb, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring=mc_coef, verbose=2, refit=True
+        scoring=ml_metric, verbose=2, refit=True
     )
 
     train_feat_norm = minmax.fit_transform(data_x)
@@ -53,6 +45,15 @@ def grids_skf_xgb(data_x, data_y, grid_params, pos_weight=1, scv_folds=5):
 
 
 def grids_skf_lsvc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    """
+
+    :param data_x:
+    :param data_y:
+    :param grid_params:
+    :param weight_classes:
+    :param scv_folds:
+    :return:
+    """
     if weight_classes is None:
         weight_classes = {0: 1, 1: 1}
     m_linear_svc = LinearSVC(
@@ -65,12 +66,11 @@ def grids_skf_lsvc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5
         class_weight=weight_classes,
         random_state=0
     )
-    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_linear_svc, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring=mc_coef, refit=True, verbose=1
+        scoring=ml_metric, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -82,6 +82,15 @@ def grids_skf_lsvc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5
 
 
 def grids_skf_svc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    """
+
+    :param data_x:
+    :param data_y:
+    :param grid_params:
+    :param weight_classes:
+    :param scv_folds:
+    :return:
+    """
     if weight_classes is None:
         weight_classes = {0: 1, 1: 1}
     m_svc = SVC(
@@ -93,12 +102,11 @@ def grids_skf_svc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5)
         random_state=0,
         max_iter=5000
     )
-    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_svc, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring=mc_coef, refit=True, verbose=1
+        scoring=ml_metric, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -110,6 +118,15 @@ def grids_skf_svc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5)
 
 
 def grids_skf_rf(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    """
+
+    :param data_x:
+    :param data_y:
+    :param grid_params:
+    :param weight_classes:
+    :param scv_folds:
+    :return:
+    """
     if weight_classes is None:
         weight_classes = {0: 1, 1: 1}
     m_rf = RForest(
@@ -119,12 +136,11 @@ def grids_skf_rf(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
         n_jobs=-1,
         random_state=0
     )
-    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_rf, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring=mc_coef, refit=True, verbose=1
+        scoring=ml_metric, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -136,6 +152,15 @@ def grids_skf_rf(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
 
 
 def grids_skf_lr(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    """
+
+    :param data_x:
+    :param data_y:
+    :param grid_params:
+    :param weight_classes:
+    :param scv_folds:
+    :return:
+    """
     if weight_classes is None:
         weight_classes = {0: 1, 1: 1}
     m_log = LogisticRegression(
@@ -144,12 +169,11 @@ def grids_skf_lr(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
         multi_class='ovr',
         n_jobs=-1
     )
-    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_log, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring=mc_coef, refit=True, verbose=1
+        scoring=ml_metric, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -257,7 +281,7 @@ def plot_cm(labels, predictions, p=0.5):
     :param p:
     :return:
     """
-    cm = metrics.confusion_matrix(labels, predictions > p)
+    cm = confusion_matrix(labels, predictions > p)
     sb.heatmap(cm,
                annot=True,
                cmap="Blues",
@@ -288,10 +312,11 @@ def plot_roc(name, labels, y_score, lcolor, lwidth=2, lstyle='-'):
     :param lstyle:
     :return:
     """
-    fp, tp, _ = metrics.roc_curve(labels, y_score)
-    auc = metrics.roc_auc_score(labels, y_score)
+    fp, tp, _ = roc_curve(labels, y_score)
+    roc_auc = roc_auc_score(labels, y_score)
 
-    plt.plot(100 * fp, 100 * tp, label='%s (auc=%.2f)' % (name, auc), color=lcolor, linewidth=lwidth, linestyle=lstyle)
+    plt.plot(
+        100 * fp, 100 * tp, label='%s (auc=%.2f)' % (name, roc_auc), color=lcolor, linewidth=lwidth, linestyle=lstyle)
     plt.xlabel('False positives [%]')
     plt.ylabel('True positives [%]')
     plt.grid(True)
@@ -312,7 +337,7 @@ def plot_pr_curve(name, true_labels, y_probability, y_hat, lcolor, lwidth=2, lst
     :return:
     """
     precision, recall, _ = precision_recall_curve(true_labels, y_probability)
-    f1, auc_ = f1_score(true_labels, y_hat), metrics.auc(recall, precision)
+    f1, auc_ = f1_score(true_labels, y_hat), auc(recall, precision)
 
     plt.plot(recall, precision, label='%s (AUC:%.2f | f1:%.2f)' % (name, auc_, f1), color=lcolor, linewidth=lwidth,
              linestyle=lstyle)
@@ -323,37 +348,36 @@ def plot_pr_curve(name, true_labels, y_probability, y_hat, lcolor, lwidth=2, lst
     ax.set_aspect('equal')
 
 
-def save_metrics(target_dataframe, model, labels, predictions, split_data, series, p=0.5, batch_size=np.nan):
+def save_metrics(
+        target_dataframe, model_name, true_y, predicted_y, probability_y, split_data, series, batch_size=np.nan):
     """
     Function to save metrics to a pandas dataframe.
+    :type model_name: str
     :param target_dataframe: the name of the target dataframe
-    :param model: the name of the model
-    :param labels: the y_true
-    :param predictions: y_hat
+    :param model_name: the name of the model
+    :param true_y: the y_true
+    :param predicted_y: y_hat
+    :param probability_y: probability or decision function for y
     :param split_data: partition of the data
     :param series: the series of the pipeline
-    :param p: probability above which the positive label is to be considered
     :param batch_size: the size of the mini batch used in Keras NN
     :return: pandas dataframe
     """
-    tp = metrics.confusion_matrix(labels, predictions > p)[1][1]
-    fp = metrics.confusion_matrix(labels, predictions > p)[0][1]
-    tn = metrics.confusion_matrix(labels, predictions > p)[0][0]
-    fn = metrics.confusion_matrix(labels, predictions > p)[1][0]
-    precision, recall, _ = precision_recall_curve(labels, predictions)
+    tn, fp, fn, tp = confusion_matrix(true_y, predicted_y).ravel()
+    precision, recall, _ = precision_recall_curve(true_y, probability_y)
     target_dataframe = target_dataframe.append(
         {
-            'model': model,
+            'model': model_name,
             'tp': tp,
             'fp': fp,
             'tn': tn,
             'fn': fn,
-            'acc': metrics.accuracy_score(labels, predictions > p),
-            'prec': metrics.precision_score(labels, predictions > p),
-            'recall': metrics.recall_score(labels, predictions > p),
-            'pr_auc': metrics.auc(recall, precision),
-            'f1': metrics.f1_score(labels, predictions > p),
-            'mc_coef': metrics.matthews_corrcoef(labels, predictions > p),
+            'bal_acc': balanced_accuracy_score(true_y, predicted_y),
+            'prec': precision_score(true_y, predicted_y),
+            'recall': recall_score(true_y, predicted_y),
+            'pr_auc': auc(recall, precision),
+            'f1': f1_score(true_y, predicted_y),
+            'mc_coef': matthews_corrcoef(true_y, predicted_y),
             'batch_s': batch_size,
             'data': split_data,
             'series': series
