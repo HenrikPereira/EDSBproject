@@ -1,9 +1,21 @@
 <component name="ProjectDictionaryState">
   <dictionary name="henri">
     <words>
+      <w>bytree</w>
+      <w>colsample</w>
       <w>dataframe</w>
+      <w>dmax</w>
+      <w>droped</w>
       <w>figsize</w>
+      <w>gini</w>
+      <w>inertias</w>
       <w>keras</w>
+      <w>kmax</w>
+      <w>kmeans</w>
+      <w>lsvc</w>
+      <w>noneed</w>
+      <w>xmax</w>
+      <w>ymax</w>
     </words>
   </dictionary>
 </component>

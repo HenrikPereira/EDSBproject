@@ -3,12 +3,203 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sb
 import numpy as np
+from clyent import color
 from sklearn import metrics
 from sklearn.metrics import precision_recall_curve
 from sklearn.metrics import f1_score
+from sklearn.cluster import KMeans
+from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
+from sklearn.preprocessing import MinMaxScaler
+from xgboost import XGBClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import LinearSVC
+from sklearn.svm import SVC
+from sklearn.ensemble import RandomForestClassifier as RForest
 
 mpl.rcParams['figure.figsize'] = (12, 10)
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
+
+def grids_skf_xgb(data_x, data_y, grid_params, pos_weight=1, scv_folds=5):
+    m_xgb = XGBClassifier(n_jobs=-1, learning_rate=0.01, scale_pos_weight=pos_weight, verbosity=0)
+    minmax = MinMaxScaler()
+
+    grid_s = GridSearchCV(
+        m_xgb, grid_params, n_jobs=-1,
+        cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
+        scoring='f1', verbose=2, refit=True
+    )
+
+    train_feat_norm = minmax.fit_transform(data_x)
+
+    grid_s.fit(train_feat_norm, data_y)
+    print(grid_s.best_estimator_)
+    return grid_s.best_estimator_
+
+
+def grids_skf_lsvc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    if weight_classes is None:
+        weight_classes = {0: 1, 1: 1}
+    m_linear_svc = LinearSVC(
+        dual=False,
+        loss='squared_hinge',
+        tol=0.0001,
+        multi_class='ovr',
+        fit_intercept=True,
+        intercept_scaling=1,
+        class_weight=weight_classes,
+        random_state=0
+    )
+
+    grid_s = GridSearchCV(
+        m_linear_svc, grid_params, n_jobs=-1,
+        cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
+        scoring='f1', refit=True, verbose=1
+    )
+
+    minmax = MinMaxScaler()
+    train_feat_norm = minmax.fit_transform(data_x)
+
+    grid_s.fit(train_feat_norm, data_y)
+    print(grid_s.best_estimator_)
+    return grid_s.best_estimator_
+
+
+def grids_skf_svc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    if weight_classes is None:
+        weight_classes = {0: 1, 1: 1}
+    m_svc = SVC(
+        probability=True,
+        tol=0.001,
+        cache_size=200,
+        decision_function_shape='ovr',
+        class_weight=weight_classes,
+        random_state=0,
+        max_iter=5000
+    )
+
+    grid_s = GridSearchCV(
+        m_svc, grid_params, n_jobs=-1,
+        cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
+        scoring='f1', refit=True, verbose=1
+    )
+
+    minmax = MinMaxScaler()
+    train_feat_norm = minmax.fit_transform(data_x)
+
+    grid_s.fit(train_feat_norm, data_y)
+    print(grid_s.best_estimator_)
+    return grid_s.best_estimator_
+
+
+def grids_skf_rf(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    if weight_classes is None:
+        weight_classes = {0: 1, 1: 1}
+    m_rf = RForest(criterion='gini',
+                   max_features='auto',
+                   class_weight=weight_classes,
+                   n_jobs=-1,
+                   random_state=0)
+
+    grid_s = GridSearchCV(
+        m_rf, grid_params, n_jobs=-1,
+        cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
+        scoring='f1', refit=True, verbose=1
+    )
+
+    minmax = MinMaxScaler()
+    train_feat_norm = minmax.fit_transform(data_x)
+
+    grid_s.fit(train_feat_norm, data_y)
+    print(grid_s.best_estimator_)
+    return grid_s.best_estimator_
+
+
+def grids_skf_lr(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
+    if weight_classes is None:
+        weight_classes = {0: 1, 1: 1}
+    m_log = LogisticRegression(
+        class_weight=weight_classes,
+        random_state=0,
+        multi_class='ovr',
+        n_jobs=-1
+    )
+
+    grid_s = GridSearchCV(
+        m_log, grid_params, n_jobs=-1,
+        cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
+        scoring='f1', refit=True, verbose=1
+    )
+
+    minmax = MinMaxScaler()
+    train_feat_norm = minmax.fit_transform(data_x)
+
+    grid_s.fit(train_feat_norm, data_y)
+    print(grid_s.best_estimator_)
+    return grid_s.best_estimator_
+
+
+def plot_elbow_kmeans(df, max_ks=7):
+    """
+
+    :param df: Dataset to evaluate
+    :param max_ks: maximum number of k nearest neighbours to be tested
+    :return:
+    """
+    ks = np.arange(1, max_ks + 1)
+    inertias = []
+
+    for k in ks:
+        # Create a KMeans instance with k clusters: model
+        t_model = KMeans(n_clusters=k, n_jobs=-1, n_init=30, random_state=123, )
+        # Fit model to samples
+        t_model.fit(df)
+        # Append the inertia to the list of inertias
+        inertias.append(t_model.inertia_)
+
+    # Calculate the distance between line k1 to kmax and ki cluster
+    xi, yi = 1, inertias[0]
+    xf, yf = max_ks, inertias[-1]
+
+    distances = []
+    for i, v in enumerate(inertias):
+        x0 = i + 1
+        y0 = v
+        numerator = abs((yf - yi) * x0 - (xf - xi) * y0 + xf * yi - yf * xi)
+        denominator = np.sqrt((yf - yi) ** 2 + (xf - xi) ** 2)
+        distances.append(numerator / denominator)
+
+    temp_df = pd.concat(
+        [pd.Series(ks, name='ks'), pd.Series(inertias, name='Inertia'), pd.Series(distances, name='Distance')],
+        axis=1).set_index('ks')
+
+    xmax = temp_df['Distance'].idxmax()
+    ymax = temp_df['Distance'].max()
+    dmax = temp_df['Inertia'].loc[xmax]
+
+    # Plot ks (x-axis) vs inertias (y-axis) using plt.plot().
+    plt.figure(figsize=(10, 5))
+    ax = sb.lineplot(data=temp_df.reset_index(), x='ks', y='Inertia')
+    plt.axvline(xmax, c='r', ls=':')
+    ax2 = ax.twinx()
+    sb.lineplot(data=temp_df.reset_index(), x='ks', y='Distance', color='g', ax=ax2)
+
+    # Annotations
+    ax2.annotate('Max Distance', xy=(xmax, ymax), xytext=(xmax + 1, ymax),
+                 arrowprops=dict(facecolor='black', shrink=0.05))
+    ax.annotate('Elbow at k:{}'.format(xmax), xy=(xmax, dmax), xytext=(xmax + 1, dmax + 1),
+                arrowprops=dict(facecolor='black', shrink=0.05))
+
+    ax.set_title('K-means Inertia Graph (Elbow method)', fontsize=16)
+    ax.set_xlabel('Nr of Clusters', fontsize=12)
+    plt.xticks(ks)
+    plt.tight_layout()
+
+    plt.show()
+
+    print('The best number of clusters is', xmax)
+
+    return xmax
 
 
 def plot_nn_metrics(history):
@@ -18,7 +209,7 @@ def plot_nn_metrics(history):
     :return:
     """
     p_metrics = ['loss', 'auc', 'precision', 'recall']
-    fig = plt.figure(figsize=(12, 10))
+    plt.figure(figsize=(12, 10))
     for n, metric in enumerate(p_metrics):
         name = metric.replace("_", " ").capitalize()
         plt.subplot(2, 2, n + 1)
@@ -160,7 +351,7 @@ def drop_var_nonobj(dataframe):
     """
     non_objs = dataframe.describe().columns.tolist()
 
-    noneed=0
+    noneed = 0
     list_noneed = []
 
     for col in non_objs:
@@ -186,7 +377,7 @@ def drop_var_obj(dataframe):
     """
     objects = dataframe.describe(include='O').columns.tolist()
 
-    noneed=0
+    noneed = 0
     list_noneed = []
 
     for col in objects:
