@@ -5,8 +5,7 @@ import seaborn as sb
 import numpy as np
 from clyent import color
 from sklearn import metrics
-from sklearn.metrics import precision_recall_curve
-from sklearn.metrics import f1_score
+from sklearn.metrics import precision_recall_curve, f1_score, matthews_corrcoef, make_scorer
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split, StratifiedKFold, GridSearchCV
 from sklearn.preprocessing import MinMaxScaler
@@ -18,16 +17,32 @@ from sklearn.ensemble import RandomForestClassifier as RForest
 
 mpl.rcParams['figure.figsize'] = (12, 10)
 colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+ml_metric = 'f1'
+
+
+def matthews_c_coef(ytrue, yhat):
+    mcc = matthews_corrcoef(y_true=ytrue, y_pred=yhat)
+    return mcc
 
 
 def grids_skf_xgb(data_x, data_y, grid_params, pos_weight=1, scv_folds=5):
+    """
+
+    :param data_x:
+    :param data_y:
+    :param grid_params:
+    :param pos_weight:
+    :param scv_folds:
+    :return:
+    """
     m_xgb = XGBClassifier(n_jobs=-1, learning_rate=0.01, scale_pos_weight=pos_weight, verbosity=0)
     minmax = MinMaxScaler()
+    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_xgb, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring='f1', verbose=2, refit=True
+        scoring=mc_coef, verbose=2, refit=True
     )
 
     train_feat_norm = minmax.fit_transform(data_x)
@@ -50,11 +65,12 @@ def grids_skf_lsvc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5
         class_weight=weight_classes,
         random_state=0
     )
+    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_linear_svc, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring='f1', refit=True, verbose=1
+        scoring=mc_coef, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -77,11 +93,12 @@ def grids_skf_svc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5)
         random_state=0,
         max_iter=5000
     )
+    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_svc, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring='f1', refit=True, verbose=1
+        scoring=mc_coef, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -95,16 +112,19 @@ def grids_skf_svc(data_x, data_y, grid_params, weight_classes=None, scv_folds=5)
 def grids_skf_rf(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
     if weight_classes is None:
         weight_classes = {0: 1, 1: 1}
-    m_rf = RForest(criterion='gini',
-                   max_features='auto',
-                   class_weight=weight_classes,
-                   n_jobs=-1,
-                   random_state=0)
+    m_rf = RForest(
+        criterion='gini',
+        max_features='auto',
+        class_weight=weight_classes,
+        n_jobs=-1,
+        random_state=0
+    )
+    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_rf, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring='f1', refit=True, verbose=1
+        scoring=mc_coef, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -124,11 +144,12 @@ def grids_skf_lr(data_x, data_y, grid_params, weight_classes=None, scv_folds=5):
         multi_class='ovr',
         n_jobs=-1
     )
+    mc_coef = make_scorer(matthews_c_coef)
 
     grid_s = GridSearchCV(
         m_log, grid_params, n_jobs=-1,
         cv=StratifiedKFold(n_splits=scv_folds, shuffle=True),
-        scoring='f1', refit=True, verbose=1
+        scoring=mc_coef, refit=True, verbose=1
     )
 
     minmax = MinMaxScaler()
@@ -362,11 +383,11 @@ def drop_var_nonobj(dataframe):
             list_noneed.append(col)
 
     if noneed == 1:
-        print('The {0} column was droped'.format(list_noneed))
+        print('\tThe {0} column was droped'.format(list_noneed))
     elif noneed > 1:
-        print('{0} columns, {1} were droped'.format(noneed, list_noneed))
+        print('\t{0} columns, {1} were droped'.format(noneed, list_noneed))
     else:
-        print('No columns were removed.')
+        print('\tNo columns were removed.')
 
 
 def drop_var_obj(dataframe):
@@ -388,8 +409,8 @@ def drop_var_obj(dataframe):
             list_noneed.append(col)
 
     if noneed == 1:
-        print('The {0} column was droped.'.format(list_noneed))
+        print('\tThe {0} column was droped.'.format(list_noneed))
     elif noneed > 1:
-        print('{0} columns, {1} were droped.'.format(noneed, list_noneed))
+        print('\t{0} columns, {1} were droped.'.format(noneed, list_noneed))
     else:
-        print('No columns were removed.')
+        print('\tNo columns were removed.')

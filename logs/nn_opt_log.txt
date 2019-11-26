@@ -16,3 +16,9 @@ time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=17, tm_min=29, tm_
 time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=18, tm_min=0, tm_sec=3, tm_wday=0, tm_yday=329, tm_isdst=0)
 smote: {'target': 1.0, 'params': {'BATCH_SIZE': 0.8572301287763169, 'l1_neurons': 16.525678333448468, 'l2_dropout': 0.6660958764383504, 'l2_neurons': 11.116037762348057, 'learn_rate': 0.08701421360985724}}
 ---------------------------------------------------------------- 
+time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=22, tm_min=49, tm_sec=12, tm_wday=0, tm_yday=329, tm_isdst=0)
+imbalanced: {'target': 0.40312503732278465, 'params': {'BATCH_SIZE': 3.14816586357329, 'l1_neurons': 27.377267492830008, 'l2_dropout': 0.7134184006256639, 'l2_neurons': 13.52761588651338, 'learn_rate': 0.0384058077306952}}
+---------------------------------------------------------------- 
+time.struct_time(tm_year=2019, tm_mon=11, tm_mday=26, tm_hour=0, tm_min=58, tm_sec=57, tm_wday=1, tm_yday=330, tm_isdst=0)
+smote: {'target': 0.3972753033947024, 'params': {'BATCH_SIZE': 4.6, 'l1_neurons': 29.967370791262347, 'l2_dropout': 0.0, 'l2_neurons': 1.0, 'learn_rate': 0.1}}
+---------------------------------------------------------------- 
