@@ -380,7 +380,9 @@ def save_metrics(
             'mc_coef': matthews_corrcoef(true_y, predicted_y),
             'batch_s': batch_size,
             'data': split_data,
-            'series': series
+            'series': series,
+            'probability_y': probability_y,
+            'true_y': true_y
         },
         ignore_index=True
     )
