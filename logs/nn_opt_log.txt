@@ -1,45 +1,6 @@
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=24, tm_hour=20, tm_min=33, tm_sec=20, tm_wday=6, tm_yday=328, tm_isdst=0)
-{'target': 1.0, 'params': {'BATCH_SIZE': 3.14816586357329, 'l1_neurons': 27.377267492830008, 'l2_dropout': 0.7134184006256639, 'l2_neurons': 13.52761588651338, 'learn_rate': 0.0384058077306952}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=24, tm_hour=22, tm_min=53, tm_sec=54, tm_wday=6, tm_yday=328, tm_isdst=0)
-{'target': 1.0, 'params': {'BATCH_SIZE': 2.750135366102031, 'l1_neurons': 34.5949235256829, 'l2_dropout': 0.4822107008573151, 'l2_neurons': 8.08348137895966, 'learn_rate': 0.042423114453956585}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=0, tm_min=18, tm_sec=0, tm_wday=0, tm_yday=329, tm_isdst=0)
-{'target': 1.0, 'params': {'BATCH_SIZE': 2.750135366102031, 'l1_neurons': 34.5949235256829, 'l2_dropout': 0.4822107008573151, 'l2_neurons': 8.08348137895966, 'learn_rate': 0.042423114453956585}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=15, tm_min=28, tm_sec=33, tm_wday=0, tm_yday=329, tm_isdst=0)
-smote: {'target': 1.0, 'params': {'BATCH_SIZE': 2.750135366102031, 'l1_neurons': 34.5949235256829, 'l2_dropout': 0.4822107008573151, 'l2_neurons': 8.08348137895966, 'learn_rate': 0.042423114453956585}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=17, tm_min=29, tm_sec=1, tm_wday=0, tm_yday=329, tm_isdst=0)
-{'target': 1.0, 'params': {'BATCH_SIZE': 2.750135366102031, 'l1_neurons': 34.5949235256829, 'l2_dropout': 0.4822107008573151, 'l2_neurons': 8.08348137895966, 'learn_rate': 0.042423114453956585}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=18, tm_min=0, tm_sec=3, tm_wday=0, tm_yday=329, tm_isdst=0)
-smote: {'target': 1.0, 'params': {'BATCH_SIZE': 0.8572301287763169, 'l1_neurons': 16.525678333448468, 'l2_dropout': 0.6660958764383504, 'l2_neurons': 11.116037762348057, 'learn_rate': 0.08701421360985724}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=25, tm_hour=22, tm_min=49, tm_sec=12, tm_wday=0, tm_yday=329, tm_isdst=0)
-imbalanced: {'target': 0.40312503732278465, 'params': {'BATCH_SIZE': 3.14816586357329, 'l1_neurons': 27.377267492830008, 'l2_dropout': 0.7134184006256639, 'l2_neurons': 13.52761588651338, 'learn_rate': 0.0384058077306952}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=26, tm_hour=0, tm_min=58, tm_sec=57, tm_wday=1, tm_yday=330, tm_isdst=0)
-smote: {'target': 0.3972753033947024, 'params': {'BATCH_SIZE': 4.6, 'l1_neurons': 29.967370791262347, 'l2_dropout': 0.0, 'l2_neurons': 1.0, 'learn_rate': 0.1}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=16, tm_min=29, tm_sec=57, tm_wday=2, tm_yday=331, tm_isdst=0)
-imbalanced: {'target': 0.8571428656578064, 'params': {'BATCH_SIZE': 4.6, 'l1_neurons': 24.798455163214552, 'l2_dropout': 0.0, 'l2_neurons': 14.0, 'learn_rate': 0.0001}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=18, tm_min=57, tm_sec=13, tm_wday=2, tm_yday=331, tm_isdst=0)
-imbalanced: {'target': 0.8646616339683533, 'params': {'BATCH_SIZE': 4.6, 'l1_neurons': 37.84839845793046, 'l2_dropout': 0.8, 'l2_neurons': 14.0, 'learn_rate': 0.0001}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=19, tm_min=13, tm_sec=15, tm_wday=2, tm_yday=331, tm_isdst=0)
-smote: {'target': 0.8421052694320679, 'params': {'BATCH_SIZE': 0.8572301287763169, 'l1_neurons': 16.525678333448468, 'l2_dropout': 0.6660958764383504, 'l2_neurons': 11.116037762348057, 'learn_rate': 0.08701421360985724}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=19, tm_min=55, tm_sec=33, tm_wday=2, tm_yday=331, tm_isdst=0)
-imbalanced: {'target': 0.8496240377426147, 'params': {'BATCH_SIZE': 1.0, 'l1_neurons': 28.0, 'l2_dropout': 0.6, 'l2_neurons': 13.0, 'learn_rate': 0.00010000000000000286}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=21, tm_min=5, tm_sec=39, tm_wday=2, tm_yday=331, tm_isdst=0)
-smote: {'target': 0.8646616339683533, 'params': {'BATCH_SIZE': 1.0, 'l1_neurons': 24.837396604795952, 'l2_dropout': 0.6, 'l2_neurons': 1.0, 'learn_rate': 0.1}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=22, tm_min=11, tm_sec=21, tm_wday=2, tm_yday=331, tm_isdst=0)
-imbalanced: {'target': 0.8571428656578064, 'params': {'BATCH_SIZE': 2.4655308960569347, 'l1_neurons': 23.038155217721, 'l2_dropout': 0.012064527712496132, 'l2_neurons': 10.947280350608358, 'learn_rate': 0.0005690780716354519}}
----------------------------------------------------------------- 
-time.struct_time(tm_year=2019, tm_mon=11, tm_mday=27, tm_hour=22, tm_min=33, tm_sec=10, tm_wday=2, tm_yday=331, tm_isdst=0)
-smote: {'target': 0.8646616339683533, 'params': {'BATCH_SIZE': 9.0, 'l1_neurons': 28.0, 'l2_dropout': 0.6, 'l2_neurons': 5.438215137302573, 'learn_rate': 0.0001}}
----------------------------------------------------------------- 
+20191130_1654,imbalanced: f1:{'target': 0.3571428158557988, 'params': {'BATCH_SIZE': 1.0, 'l1_neurons': 18.947577016804395, 'l2_dropout': 0.0, 'l2_neurons': 13.0, 'learn_rate': 0.1}}
+20191130_1655,SMOTE f1, {'target': 0.3571428158557988, 'params': {'BATCH_SIZE': 1.0, 'l1_neurons': 18.947577016804395, 'l2_dropout': 0.0, 'l2_neurons': 13.0, 'learn_rate': 0.1}}
+20191201_1439,imbalanced: f1:{'target': 0.34782601884899744, 'params': {'BATCH_SIZE': 1.1528323897918507, 'l1_neurons': 18.545262663187685, 'l2_dropout': 0.07211793672790134, 'l2_neurons': 4.553682370265739, 'learn_rate': 0.011960899123528981}}
+20191201_1501,SMOTE f1, {'target': 0.34782601884899744, 'params': {'BATCH_SIZE': 1.1528323897918507, 'l1_neurons': 18.545262663187685, 'l2_dropout': 0.07211793672790134, 'l2_neurons': 4.553682370265739, 'learn_rate': 0.011960899123528981}}
+20191204_1847,imbalanced: f1:{'target': 0.34615378684179104, 'params': {'BATCH_SIZE': 3.615487691510822, 'l1_neurons': 17.89344304966457, 'l2_dropout': 0.07735577859291198, 'l2_neurons': 4.785140211090207, 'learn_rate': 0.036434706017168}}
+20191204_1915,SMOTE f1, {'target': 0.34615378684179104, 'params': {'BATCH_SIZE': 3.615487691510822, 'l1_neurons': 17.89344304966457, 'l2_dropout': 0.07735577859291198, 'l2_neurons': 4.785140211090207, 'learn_rate': 0.036434706017168}}
