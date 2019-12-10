@@ -1,11 +1,27 @@
-# Enterprise Data Science Bootcamp
-Project for EDSB project in EDSA 2019 post-graduation (NOVA - IMS)
-## Use Case: Human Resources Analysis Predict Attrition
-* Bruno Candeias (M20180313), 
-* David Oliveira (M20181430), 
-* Henrique Pereira (M20181395), 
-* Manuel Oom (M20181431)
-### I. Status Report
+<p>
+    <img src = "https://www.novaims.unl.pt/images/logo.png" width = 100>
+    <b><span style="font-size: x-large; ">Human Resources Analysis - Predicting Attrition</span></b>
+</p>
+<h2 align=left><span style="font-size: medium; ">EDS Bootcamp project | Enterprise Data Science and Analytics (2019)</span></h2>
+
+## Use Case: Human Resources Analysis Predicting Attrition
+*Authors: Bruno Candeias<sup>1</sup>, David Oliveira<sup>2</sup>, Henrique Pereira<sup>3</sup> & Manuel Oom<sup>4</sup>*
+1. *M20180313: M20180313@novaims.unl.pt*
+2. *M20181430: M20181430@novaims.unl.pt*
+3. *M20181395: M20181395@novaims.unl.pt*
+4. *M20181431: M20181431@novaims.unl.pt*
+
+### I. Important Files
+The most important files in this work are the following:
+* Final Presentation_EDSB_20191209_v0.01.ppt
+* HumanResourcesAnalysis_PredictAttrition.pbix
+* Data_models.ipynb
+* data_pre_proc.py
+* auxiliary.py
+
+Please check the requirements file for further information.
+
+### II. Status Report
 We choose this use case mainly because it allows us to explore different models, which will give us the opportunity to 
 have a broader view for the problem: descriptive and predictive. In addition, human resources turnover is very present 
 in our professional life, which also motivated our choice.
@@ -15,7 +31,7 @@ Our approach will follow the work flow:
 2. Model Evaluation & Selection; 
 3. Results Presentation. 
 
-### b. Dataset Exploration
+### III. Dataset Exploration
 The dataset (HR_DS.csv) that will be used in the use case (Human Resources Analysis Predict Attrition) contains 1470 
 records with 35 columns:
 * Age;	Attrition;	BusinessTravel;	DailyRate; Department; DistanceFromHome; Education; EducationField; EmployeeCount;
@@ -27,7 +43,7 @@ records with 35 columns:
 We'll explore the dataset to evaluate each variable and how they are correlated. Our first findings were: 
 * Most of our data (DistanceFromHome, MonthlyIncome, NumCompaniesWorked, PercentSalaryHike, TotalWorkingYear, 
 YearsAtCompany, YearsSinceLastPromotion) shows skewness, and not normal;
-* Columns like YearsWithCurrManager and YearsInCurrentRole have 2 diferent distributions with a cutoff by 5 years;
+* Columns like YearsWithCurrManager and YearsInCurrentRole have 2 different distributions with a cutoff by 5 years;
 * There are several variables that have outliers: MonthlyIncome, NumCompaniesWorked, PerformanceRating, StockOptions, 
 TotalWorkingYears, TrainingTimesLastYear, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, 
 YearsWithCurrManager;
